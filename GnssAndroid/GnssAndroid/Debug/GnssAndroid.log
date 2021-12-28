@@ -1,0 +1,4 @@
+﻿  Origine.c
+C:\Users\gterg\Documents\GitHub\readGNSSandroid\GnssAndroid\GnssAndroid\Origine.c(34,66): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\readGNSSandroid\GnssAndroid\GnssAndroid\Origine.c(94,38): warning C4244: '=': conversione da 'double' a 'float'. Possibile perdita di dati.
+  GnssAndroid.vcxproj -> C:\Users\gterg\Documents\GitHub\readGNSSandroid\GnssAndroid\Debug\GnssAndroid.exe
