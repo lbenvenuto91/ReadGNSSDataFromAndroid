@@ -521,7 +521,7 @@ def computeDoppler(header, gnssdata):
     return round(-PseudorangeRateMetersPerSecond/wavelength,3)
 
 def main():
-    header,gnssraw=readGNSSAndroid('readgnsstest.txt','Raw')
+    header,gnssraw=readGNSSAndroid('index.csv','Raw')
     
     for line in gnssraw:
         if line.split(',')[0]=='Raw':

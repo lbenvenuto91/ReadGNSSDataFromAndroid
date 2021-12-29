@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: File corrente",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: File corrente",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "(gdb) Associa",
             "type": "cppdbg",
             "request": "attach",
@@ -19,7 +33,7 @@
                     "ignoreFailures": true
                 },
                 {
-                    "description":  "Imposta Versione Disassembly su Intel",
+                    "description": "Imposta Versione Disassembly su Intel",
                     "text": "-gdb-set disassembly-flavor intel",
                     "ignoreFailures": true
                 }
