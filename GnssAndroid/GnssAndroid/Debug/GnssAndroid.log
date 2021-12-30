@@ -1,4 +1,9 @@
 ﻿  Origine.c
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(69,51): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(90,66): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(73,51): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(112,28): warning C4244: '+=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(98,19): warning C4101: 'glo_td': variabile locale senza riferimenti
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(96,22): warning C4101: 'tmStructtod': variabile locale senza riferimenti
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(135,66): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(142,27): warning C4244: '+=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\Origine.c(188): warning C4715: 'computePseudorange': non tutti i percorsi di controllo restituiscono un valore
   GnssAndroid.vcxproj -> C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\Debug\GnssAndroid.exe
