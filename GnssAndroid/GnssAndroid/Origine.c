@@ -4,6 +4,11 @@
 #include<stdbool.h>
 #include<math.h>
 #include<time.h>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 #define MAXCHAR 1024
 #define SPEED_OF_LIGHT 299792458.0  // [m/s]
@@ -13,6 +18,9 @@
 #define DAYSEC 86400
 #define CURRENT_GPS_LEAP_SECOND 18
 #define GLOT_TO_UTC 10800  // Time difference between GLOT and UTC in seconds
+#define ADR_STATE_VALID 0x00000001
+#define STATE_GAL_E1C_2ND_CODE_LOCK 0x00000800
+#define STATE_GAL_E1B_PAGE_SYNC 0x00001000
 
 //#define GPSTIME newDateTime(1980, 01, 06, 00, 00, 00)
 
@@ -24,9 +32,15 @@ typedef struct {
 	signed long long int FullBiasNanos;
 	double BiasNanos;
 	int TimeOffsetNanos;
+	int State;
 	int Svid;
 	int ConstellationType;
 	long long int ReceivedSvTimeNanos;
+	double AccumulatedDeltaRange;
+	double Cn0;
+	double CarrierFrequencyHz;
+	int ADRState;
+	double PseudorangeRateMetersPerSecond;
 
 }androidgnssmeas;
 
@@ -121,6 +135,56 @@ double glot_to_gpst(time_t gpst_current_epoch, double tod_seconds)
 
 }
 
+const char* get_constellation(androidgnssmeas gnssdata) {
+	char constellation[10] = "A";
+
+	if (gnssdata.ConstellationType == 1) {
+		strcpy(constellation, "G");
+		return constellation;
+	}
+	else if (gnssdata.ConstellationType == 2) {
+		strcpy(constellation, "S");
+		return constellation;
+	}
+	else if (gnssdata.ConstellationType == 3) {
+		strcpy(constellation, "R");
+		return constellation;
+	}
+	else if (gnssdata.ConstellationType == 4) {
+		strcpy(constellation, "J");
+		return constellation;
+	}
+	else if (gnssdata.ConstellationType == 5) {
+		strcpy(constellation, "C");
+		return constellation;
+	}
+	else if (gnssdata.ConstellationType == 6) {
+		strcpy(constellation, "E");
+		return constellation;
+	}
+	else if (gnssdata.ConstellationType == 7) {
+		strcpy(constellation, "I");
+		return constellation;
+	}
+
+}
+
+
+const char* getSatID(androidgnssmeas gnssdata) {
+
+	char satID[100]="A";
+	
+	char number[100] = {0};
+	_itoa(gnssdata.Svid,number,10);
+	
+	strcpy(satID, get_constellation(gnssdata));
+
+	strcat(satID, number);
+	return satID;
+}
+
+
+
 double computePseudorange(androidgnssmeas gnssdata, float psdrgBias) 
 
 {
@@ -188,7 +252,101 @@ double computePseudorange(androidgnssmeas gnssdata, float psdrgBias)
 
 
 
+int get_rnx_band_from_freq(double frequency)
+{
+	double ifreq = frequency / (10.23E6);
+	int iifreq = ifreq;
+	if (ifreq >= 154) {
+		return 1;
+	}
+	else if (iifreq == 115) {
+		return 5;
+	}
+	else if (iifreq == 153) {
+		return 2;
+	}
+	else {
+		printf("Invalid frequency detected\n");
+		return -1;
+	}
 
+}
+
+const char* get_rnx_attr(int band, char constellation, int state) 
+{
+	char attr[10] = "1C";
+
+	//Make distinction between GAL E1Cand E1B code
+	if (band == 1 && constellation == 'E') {
+		if ((state & STATE_GAL_E1C_2ND_CODE_LOCK == 0) && (state & STATE_GAL_E1B_PAGE_SYNC != 0))
+		{
+		strcpy(attr, "1B");
+		}
+	}
+	else if (band == 5) {
+		strcpy(attr, "5Q");
+	}
+	else if (band == 2 && constellation == 'C') {
+		strcpy(attr, "2I");
+	}
+	return attr;
+}
+
+const char* get_obs_code(androidgnssmeas gnssdata)
+{
+	int band,freq;
+	char constellation[10]="A";
+	char attr[10] = "A";
+	char obscode[10] = "C";
+	strcpy(constellation, get_constellation(gnssdata));
+	freq = gnssdata.CarrierFrequencyHz;
+	band = get_rnx_band_from_freq(freq);
+	strcpy(attr, get_rnx_attr(band, constellation, gnssdata.State));
+
+	strcat(obscode, attr);
+
+	return obscode;
+}
+
+
+double get_frequency(androidgnssmeas gnssdata) 
+{
+	double freq;
+	if (gnssdata.CarrierFrequencyHz == 0) //LB: check how to parse null values: not sure this case will ever happen
+	{
+		freq = 154 * 10.24E6;
+	}
+	else {
+		freq = gnssdata.CarrierFrequencyHz;
+	}
+	return freq;
+}
+
+
+double computeCarrierPhase(androidgnssmeas gnssdata) {
+	double cphase, wavelength;
+	
+	wavelength = SPEED_OF_LIGHT / get_frequency(gnssdata);
+
+	if ((gnssdata.ADRState & ADR_STATE_VALID) == 0) {
+		printf("ADR STATE not Valid --> cphase = 0.0 \n");
+		cphase = 0.0;
+		return cphase;
+	}
+
+	cphase = gnssdata.AccumulatedDeltaRange / wavelength;
+
+	return cphase;
+}
+
+
+double computeDoppler(androidgnssmeas gnssdata) 
+{
+	double doppler,wavelength;
+	wavelength = SPEED_OF_LIGHT / get_frequency(gnssdata);
+	doppler = -gnssdata.PseudorangeRateMetersPerSecond / wavelength;
+	return doppler;
+}
 void printValues(androidgnssmeas values[])
 {
 	int nelem = 0;
@@ -248,10 +406,23 @@ int main(void) {
 				fgnssand[i].Svid = atoi(col);
 			if (col_count == 8)
 				fgnssand[i].TimeOffsetNanos = atoi(col);
+			if (col_count == 9)
+				fgnssand[i].State = atoi(col);
 			if (col_count == 20)
 				fgnssand[i].ConstellationType = atoi(col);
 			if (col_count == 10)
 				fgnssand[i].ReceivedSvTimeNanos = atoll(col);
+			if (col_count == 12)
+				sscanf(col, "%lf", &fgnssand[i].Cn0);
+			if (col_count == 13)
+				sscanf(col, "%lf", &fgnssand[i].PseudorangeRateMetersPerSecond);
+			if (col_count == 16)
+				sscanf(col, "%lf", &fgnssand[i].AccumulatedDeltaRange);
+			if (col_count == 15)
+				fgnssand[i].ADRState= atoi(col);
+			if (col_count == 18)
+				sscanf(col, "%lf", &fgnssand[i].CarrierFrequencyHz);
+
 			col = strtok(NULL, ","); //update field value
 			col_count++;
 
@@ -264,15 +435,28 @@ int main(void) {
 
 	num = sizeof(fgnssand) / sizeof(fgnssand[0]);
 
-	printf("numero elementi: %f", num);
-
+	printf("numero elementi: %f\n", num);
 
 	//printValues(fgnssand);
 	float psdrgBias = 0;
-
+	printf("Sat ID | Obs Code | Psrange | Cphase | Doppler | C/N0 |\n");
 	for (int i = 0; i < 129; i++)
 	{
+		/*
+		get_obs_code(fgnssand[i]);
 		computePseudorange(fgnssand[i], psdrgBias);
+		computeCarrierPhase(fgnssand[i]);
+		computeDoppler(fgnssand[i]);
+		*/
+		char code[10] = "D";
+		strcpy(code, get_obs_code(fgnssand[i]));
+		printf("%s | %s | %lf | %lf | %lf | %lf |\n", getSatID(fgnssand[i]), code,computePseudorange(fgnssand[i], psdrgBias), computeCarrierPhase(fgnssand[i]), computeDoppler(fgnssand[i]), fgnssand[i].Cn0);
+		
+		#ifdef _WIN32
+		Sleep(1000); //milliseconds
+		#else
+		usleep(1000);  
+		#endif
 	}
 
 
