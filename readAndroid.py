@@ -522,6 +522,8 @@ def computeDoppler(header, gnssdata):
 
 def main():
     header,gnssraw=readGNSSAndroid('index.csv','Raw')
+    header,gnssnav=readGNSSAndroid('gnss_log_2021_12_24_11_46_58.txt','Nav')
+
     
     for line in gnssraw:
         if line.split(',')[0]=='Raw':
@@ -534,6 +536,7 @@ def main():
             cn0=round(float(line.split(',')[header['Cn0DbHz']]),3)
             print(b,c,d,e,cn0)
             time.sleep(1)
+    
 
 if __name__=="__main__":
     main()
