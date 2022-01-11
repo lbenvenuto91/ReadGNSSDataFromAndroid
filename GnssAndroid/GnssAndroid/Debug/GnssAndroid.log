@@ -1,27 +1,28 @@
 ﻿  MainRaw.c
 C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(13,1): warning C4005: 'MAXCHAR': ridefinizione macro
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winnt.h(1192): message : vedere la precedente definizione di 'MAXCHAR'
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(123,51): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(162,28): warning C4244: '+=': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(148,19): warning C4101: 'glo_td': variabile locale senza riferimenti
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(146,22): warning C4101: 'tmStructtod': variabile locale senza riferimenti
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(235,66): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(242,27): warning C4244: '+=': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(294,1): warning C4244: 'inizializzazione': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(317,48): warning C4554: '&': controllare eventuali errori di precedenza tra gli operatori. Per maggiore chiarezza, usare le parentesi
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(317,90): warning C4554: '&': controllare eventuali errori di precedenza tra gli operatori. Per maggiore chiarezza, usare le parentesi
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(338,36): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(340,47): warning C4047: 'funzione': 'char' differisce da 'char [10]' nei livelli di riferimento indiretto
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(340,34): warning C4024: 'get_rnx_attr': tipi diversi tra il parametro 2 formale e quello effettivo
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(206): warning C4715: 'get_constellation': non tutti i percorsi di controllo restituiscono un valore
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(179): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(183): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(187): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(191): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(195): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(199): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(203): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(219): warning C4172: verrà restituito l'indirizzo del valore : satID temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(328): warning C4172: verrà restituito l'indirizzo del valore : attr temporaneo o della variabile locale
-C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(344): warning C4172: verrà restituito l'indirizzo del valore : obscode temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(122,51): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(161,28): warning C4244: '+=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(147,19): warning C4101: 'glo_td': variabile locale senza riferimenti
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(145,22): warning C4101: 'tmStructtod': variabile locale senza riferimenti
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(234,66): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(241,27): warning C4244: '+=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(293,1): warning C4244: 'inizializzazione': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(316,48): warning C4554: '&': controllare eventuali errori di precedenza tra gli operatori. Per maggiore chiarezza, usare le parentesi
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(316,90): warning C4554: '&': controllare eventuali errori di precedenza tra gli operatori. Per maggiore chiarezza, usare le parentesi
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(337,36): warning C4244: '=': conversione da 'double' a 'int'. Possibile perdita di dati.
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(339,47): warning C4047: 'funzione': 'char' differisce da 'char [10]' nei livelli di riferimento indiretto
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(339,34): warning C4024: 'get_rnx_attr': tipi diversi tra il parametro 2 formale e quello effettivo
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(404,20): warning C4018: '<': errata corrispondenza tra signed e unsigned
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(205): warning C4715: 'get_constellation': non tutti i percorsi di controllo restituiscono un valore
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(178): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(182): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(186): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(190): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(194): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(198): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(202): warning C4172: verrà restituito l'indirizzo del valore : constellation temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(218): warning C4172: verrà restituito l'indirizzo del valore : satID temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(327): warning C4172: verrà restituito l'indirizzo del valore : attr temporaneo o della variabile locale
+C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\GnssAndroid\MainRaw.c(343): warning C4172: verrà restituito l'indirizzo del valore : obscode temporaneo o della variabile locale
   GnssAndroid.vcxproj -> C:\Users\gterg\Documents\GitHub\ReadGNSSDataFromAndroid\GnssAndroid\Debug\GnssAndroid.exe

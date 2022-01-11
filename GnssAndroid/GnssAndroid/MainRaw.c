@@ -76,8 +76,7 @@ typedef struct {
 	int status;
 	int MessageID;
 	int SubMessageID;
-	int Message[50]; //must be declared dynamically
-
+	int* Message; 
 }androidgnssnav;
 
 
@@ -397,6 +396,19 @@ void printValues(androidgnssmeas values[])
 	}
 }
 
+int colcount(char row[]) {
+
+	size_t len_row = strlen(row);
+	int commas = 0;
+
+	for (int i = 0; i < len_row; i++) {
+		if (row[i] == ',') {
+			commas++;
+		}
+	}
+	return commas+1;
+}
+
 int main(void) {
 
 	//READ OBSERVATION FILE
@@ -487,6 +499,7 @@ int main(void) {
 
 	int j = 0;
 	while (fgets(buff_n, 1024, gnssNavfile))
+	
 	{
 		col_count_n = 0;
 		row_count_n++;
@@ -494,9 +507,13 @@ int main(void) {
 		{
 			continue; //skip the first line
 		}
+		int clm = colcount(buff_n);
+		clm -= 6;
 		int b = 0;
 		char* coln = strtok(buff_n, ",");//separate buff with commas
 		
+		gnssandnav[j].Message = malloc(sizeof(int)*clm);
+
 		while (coln)
 		{
 			if (col_count_n == 0)
@@ -516,18 +533,15 @@ int main(void) {
 				b++;
 			}
 			coln = strtok(NULL, ","); //update field value
-			
 			col_count_n++;		
 		}
 	j++;
-	
 	b = 0;
 	}
 	fclose(gnssNavfile);
 
-
 	// Compute Raw measurements
-	/*
+	
 	float num = 0;
 
 	num = sizeof(fgnssand) / sizeof(fgnssand[0]);
@@ -549,13 +563,13 @@ int main(void) {
 		strcpy(code, get_obs_code(fgnssand[i]));
 		printf("%s | %s | %lf | %lf | %lf | %lf |\n", getSatID(fgnssand[i]), code,computePseudorange(fgnssand[i], psdrgBias), computeCarrierPhase(fgnssand[i]), computeDoppler(fgnssand[i]), fgnssand[i].Cn0);
 		
-		#ifdef _WIN32
-		Sleep(1000); //milliseconds
-		#else
-		usleep(1000);  
-		#endif
+		//#ifdef _WIN32
+		//Sleep(1000); //milliseconds
+		//#else
+		//usleep(1000);  
+		//#endif
 	}
-	*/
+	
 
 	//decode Navigation message
 
