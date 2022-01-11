@@ -21,6 +21,12 @@
 #define ADR_STATE_VALID 0x00000001
 #define STATE_GAL_E1C_2ND_CODE_LOCK 0x00000800
 #define STATE_GAL_E1B_PAGE_SYNC 0x00001000
+#define STATE_CODE_LOCK 0x00000001
+#define STATE_TOW_DECODED 0x00000008
+#define STATE_GLO_TOD_DECODED 0x00000080
+#define STATE_MSEC_AMBIGUOUS 0x00000010
+#define STATE_GAL_E1BC_CODE_LOCK 0x00000400
+#define STATE_GAL_E1C_2ND_CODE_LOCK 0x00000800
 
 //Navigation Message
 #define STATUS_PARITY_PASSED  1 // 0x00000001 The Navigation Message was received without any parity error in its navigation words.
@@ -43,10 +49,6 @@
 #define TYPE_UNKNOWN 0 // 0x00000000 Message type unknown
 
 
-//#define GPSTIME newDateTime(1980, 01, 06, 00, 00, 00)
-
-
-
 typedef struct {
 
 	char typemeas [3];
@@ -66,7 +68,6 @@ typedef struct {
 	double PseudorangeRateMetersPerSecond;
 
 }androidgnssmeas;
-
 
 typedef struct {
 
@@ -96,7 +97,6 @@ time_t newDateTime(const int year, const int month, const int date, const int hr
 	}
 	return time;
 }
-
 
 char* formatDateTime(const time_t mytime) {
 	/*Used to printf date object*/
@@ -130,7 +130,6 @@ double check_week_crossover(double tRxSeconds, double tTxSeconds)
 	}
 	return tau;
 }
-
 
 double glot_to_gpst(time_t gpst_current_epoch, double tod_seconds) 
 {
@@ -204,7 +203,6 @@ const char* get_constellation(androidgnssmeas gnssdata) {
 
 }
 
-
 const char* getSatID(androidgnssmeas gnssdata) {
 
 	char satID[100]="A";
@@ -218,12 +216,137 @@ const char* getSatID(androidgnssmeas gnssdata) {
 	return satID;
 }
 
+int get_rnx_band_from_freq(double frequency)
+{
+	double ifreq = frequency / (10.23E6);
+	int iifreq = ifreq;
+	if (ifreq >= 154) {
+		return 1;
+	}
+	else if (iifreq == 115) {
+		return 5;
+	}
+	else if (iifreq == 153) {
+		return 2;
+	}
+	else {
+		printf("Invalid frequency detected\n");
+		return -1;
+	}
 
+}
+
+const char* get_rnx_attr(int band, char constellation, int state)
+{
+	char attr[10] = "1C";
+
+	//Make distinction between GAL E1Cand E1B code
+	if (band == 1 && constellation == 'E') {
+		if ((state & STATE_GAL_E1C_2ND_CODE_LOCK == 0) && (state & STATE_GAL_E1B_PAGE_SYNC != 0))
+		{
+			strcpy(attr, "1B");
+		}
+	}
+	else if (band == 5) {
+		strcpy(attr, "5Q");
+	}
+	else if (band == 2 && constellation == 'C') {
+		strcpy(attr, "2I");
+	}
+	return attr;
+}
+
+const char* get_obs_code(androidgnssmeas gnssdata)
+{
+	int band, freq;
+	char constellation[10] = "A";
+	char attr[10] = "A";
+	char obscode[10] = "C";
+	strcpy(constellation, get_constellation(gnssdata));
+	freq = gnssdata.CarrierFrequencyHz;
+	band = get_rnx_band_from_freq(freq);
+	strcpy(attr, get_rnx_attr(band, constellation, gnssdata.State));
+
+	strcat(obscode, attr);
+
+	return obscode;
+}
+
+double get_frequency(androidgnssmeas gnssdata)
+{
+	double freq;
+	if (gnssdata.CarrierFrequencyHz == 0) //LB: check how to parse null values: not sure this case will ever happen
+	{
+		freq = 154 * 10.24E6;
+	}
+	else {
+		freq = gnssdata.CarrierFrequencyHz;
+	}
+	return freq;
+}
+
+void check_trck_state(androidgnssmeas gnssdata)
+{
+	double freq = get_frequency(gnssdata);
+	int freq_band = get_rnx_band_from_freq(freq);
+
+	if (gnssdata.ConstellationType == 1 || gnssdata.ConstellationType == 2 || gnssdata.ConstellationType == 4 || gnssdata.ConstellationType == 5)
+	{
+		if ((gnssdata.State & STATE_CODE_LOCK) == 0)
+			printf("State %i, hase STATE CODE LOCK not valid\n", gnssdata.State);
+		else if ((gnssdata.State & STATE_TOW_DECODED) == 0)
+			printf("State %i, has  STATE TOW DECODED not valid\n", gnssdata.State);
+		else if ((gnssdata.State & STATE_MSEC_AMBIGUOUS) != 0)
+			printf("State %i, has  STATE_MSEC_AMBIGUOUS not valid\n", gnssdata.State);
+	}
+	else if (gnssdata.ConstellationType == 3)
+	{
+		if ((gnssdata.State & STATE_CODE_LOCK) == 0)
+			printf("State %i, has STATE CODE LOCK not valid\n", gnssdata.State);
+		else if ((gnssdata.State & STATE_GLO_TOD_DECODED) == 0)
+			printf("State %i, has STATE_GLO_TOD_DECODED not valid\n", gnssdata.State);
+		else if ((gnssdata.State & STATE_MSEC_AMBIGUOUS) != 0)
+			printf("State %i, has  STATE_MSEC_AMBIGUOUS not valid\n", gnssdata.State);
+	}
+	else if (gnssdata.ConstellationType == 6)
+	{
+		if (freq_band == 1)
+		{
+			if ((gnssdata.State & STATE_GAL_E1BC_CODE_LOCK) == 0)
+				printf("State %i, has STATE GAL E1BC CODE LOCK not valid\n", gnssdata.State);
+			else if ((gnssdata.State & STATE_GAL_E1C_2ND_CODE_LOCK) == 0) //State value indicates presence of E1B code
+			{
+				if ((gnssdata.State & STATE_TOW_DECODED) == 0)
+					printf("State %i, has  STATE TOW DECODED not valid\n", gnssdata.State);
+				else if ((gnssdata.State & STATE_MSEC_AMBIGUOUS) != 0)
+					printf("State %i, has  STATE_MSEC_AMBIGUOUS not valid\n", gnssdata.State);
+			}
+			else //State value indicates presence of E1C code
+			{
+				if ((gnssdata.State & STATE_GAL_E1C_2ND_CODE_LOCK) == 0)
+					printf("State %i, has STATE_GAL_E1C_2ND_CODE_LOCK not valid\n", gnssdata.State);
+				else if ((gnssdata.State & STATE_MSEC_AMBIGUOUS) != 0)
+					printf("State %i, has  STATE_MSEC_AMBIGUOUS not valid\n", gnssdata.State);
+			}
+		}
+		else if (freq_band == 5)
+		{
+			if ((gnssdata.State & STATE_CODE_LOCK) == 0)
+				printf("State %i, has STATE CODE LOCK not valid\n", gnssdata.State);
+			else if ((gnssdata.State & STATE_GLO_TOD_DECODED) == 0)
+				printf("State %i, has STATE_GLO_TOD_DECODED not valid\n", gnssdata.State);
+			else if ((gnssdata.State & STATE_MSEC_AMBIGUOUS) != 0)
+				printf("State %i, has  STATE_MSEC_AMBIGUOUS not valid\n", gnssdata.State);
+		}
+
+	}
+	else
+		printf("Constellation Type %i, is invalid or not implemented\n", gnssdata.ConstellationType);
+
+}
 
 double computePseudorange(androidgnssmeas gnssdata, float psdrgBias) 
-
 {
-	
 	int gpsweek = 0;
 	double psrange, local_est_GPS_time = 0, gpssow = 0, T_Rx_seconds = 0, T_Tx_seconds=0, tau=0,Tod_secs=0 ;
 	struct tm tmStruct;
@@ -250,8 +373,10 @@ double computePseudorange(androidgnssmeas gnssdata, float psdrgBias)
 
 	//compute satellite emission time
 
+	//check trck status
+	//check_trck_state(gnssdata);
+
 	//split cases depending on different constellations
-	
 	if (gnssdata.ConstellationType == 2) 
 	{
 		printf("ERROR: Pseudorange computation not supported for SBAS\n");
@@ -285,79 +410,6 @@ double computePseudorange(androidgnssmeas gnssdata, float psdrgBias)
 	return psrange;
 }
 
-
-
-int get_rnx_band_from_freq(double frequency)
-{
-	double ifreq = frequency / (10.23E6);
-	int iifreq = ifreq;
-	if (ifreq >= 154) {
-		return 1;
-	}
-	else if (iifreq == 115) {
-		return 5;
-	}
-	else if (iifreq == 153) {
-		return 2;
-	}
-	else {
-		printf("Invalid frequency detected\n");
-		return -1;
-	}
-
-}
-
-const char* get_rnx_attr(int band, char constellation, int state) 
-{
-	char attr[10] = "1C";
-
-	//Make distinction between GAL E1Cand E1B code
-	if (band == 1 && constellation == 'E') {
-		if ((state & STATE_GAL_E1C_2ND_CODE_LOCK == 0) && (state & STATE_GAL_E1B_PAGE_SYNC != 0))
-		{
-		strcpy(attr, "1B");
-		}
-	}
-	else if (band == 5) {
-		strcpy(attr, "5Q");
-	}
-	else if (band == 2 && constellation == 'C') {
-		strcpy(attr, "2I");
-	}
-	return attr;
-}
-
-const char* get_obs_code(androidgnssmeas gnssdata)
-{
-	int band,freq;
-	char constellation[10]="A";
-	char attr[10] = "A";
-	char obscode[10] = "C";
-	strcpy(constellation, get_constellation(gnssdata));
-	freq = gnssdata.CarrierFrequencyHz;
-	band = get_rnx_band_from_freq(freq);
-	strcpy(attr, get_rnx_attr(band, constellation, gnssdata.State));
-
-	strcat(obscode, attr);
-
-	return obscode;
-}
-
-
-double get_frequency(androidgnssmeas gnssdata) 
-{
-	double freq;
-	if (gnssdata.CarrierFrequencyHz == 0) //LB: check how to parse null values: not sure this case will ever happen
-	{
-		freq = 154 * 10.24E6;
-	}
-	else {
-		freq = gnssdata.CarrierFrequencyHz;
-	}
-	return freq;
-}
-
-
 double computeCarrierPhase(androidgnssmeas gnssdata) {
 	double cphase, wavelength;
 	
@@ -373,7 +425,6 @@ double computeCarrierPhase(androidgnssmeas gnssdata) {
 
 	return cphase;
 }
-
 
 double computeDoppler(androidgnssmeas gnssdata) 
 {
